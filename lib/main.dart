@@ -1,67 +1,86 @@
 import 'package:flutter/material.dart';
+import './questionario.dart';
+import './questao.dart';
+import './resultado.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(PerguntaApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+class _PerguntaAppState extends State<PerguntaApp> {
+  var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
+  final List<Map<String, Object>> _perguntas = const [
+    {
+      'texto': 'Qual a sua cor favorita?',
+      'resposta': [
+        {'texto': 'Preto', 'pontuacao': 10},
+        {'texto': 'Vermelho', 'pontuacao': 5},
+        {'texto': 'Verde', 'pontuacao': 3},
+        {'texto': 'Branco', 'pontuacao': 1},
+      ]
+    },
+    {
+      'texto': 'Qual o seu animal favorito?',
+      'resposta': [
+        {'texto': 'Coelho', 'pontuacao': 10},
+        {'texto': 'Cobra', 'pontuacao': 5},
+        {'texto': 'Elefante', 'pontuacao': 3},
+        {'texto': 'Leão', 'pontuacao': 1},
+      ]
+    },
+    {
+      'texto': 'Qual o seu instrutor favorito?',
+      'resposta': [
+        {'texto': 'Maria', 'pontuacao': 10},
+        {'texto': 'Cesaltino', 'pontuacao': 5},
+        {'texto': 'Leo', 'pontuacao': 3},
+        {'texto': 'Pedro', 'pontuacao': 1},
+      ]
+    },
+  ];
+  void _responder(int pontuacao) {
+    if (temPerguntaSelecionada) {
+      setState(() {
+        _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
+      });
+    }
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  void _restart() {
     setState(() {
-      _counter++;
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
     });
   }
 
-  @override
+  bool get temPerguntaSelecionada {
+    return _perguntaSelecionada < _perguntas.length;
+  }
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return MaterialApp(
+      title: 'My flutter app',
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Center(
+              child: Text('My Question App'),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+          ),
+          body: temPerguntaSelecionada
+              ? Questionario(
+                  perguntaSelecionada: _perguntaSelecionada,
+                  perguntas: _perguntas,
+                  quandoResponder: _responder,
+                  temPerguntaSelecionada: temPerguntaSelecionada)
+              : Resultado(_pontuacaoTotal, _restart)),
     );
+  }
+}
+
+class PerguntaApp extends StatefulWidget {
+  _PerguntaAppState createState() {
+    return _PerguntaAppState();
   }
 }
