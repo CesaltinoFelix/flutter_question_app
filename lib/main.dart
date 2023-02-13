@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './questionario.dart';
 import './questao.dart';
+import './questionario.dart';
 import './resultado.dart';
 
 void main() {
